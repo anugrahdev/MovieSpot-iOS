@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -41,7 +42,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableViewMovie.dequeueReusableCell(withIdentifier: "\(MovieTableViewCell.self)", for: indexPath) as! MovieTableViewCell
         cell.tvMovie?.text = movies[indexPath.row].title
-        cell.ivMovie?.load(urlString: "https://image.tmdb.org/t/p/w300/\(movies[indexPath.row].backdropPath!)")
+        cell.ivMovie?.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w300/\(movies[indexPath.row].backdropPath!)"), placeholderImage: #imageLiteral(resourceName: "placeholder_image"),completed: nil)
         cell.tvReleaseDate?.text = movies[indexPath.row].releaseDate
         cell.tvRating?.text = "\(movies[indexPath.row].voteAverage ?? 0.0)"
         
@@ -59,21 +60,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         navigationController?.pushViewController(controller, animated: true)
     }
 
-}
-
-
-extension UIImageView{
-    func load(urlString:String){
-        let url = URL(string: urlString)
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url!){
-                if let image = UIImage(data: data){
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
 }
 

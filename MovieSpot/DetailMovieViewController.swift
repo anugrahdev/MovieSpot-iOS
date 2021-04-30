@@ -24,7 +24,7 @@ class DetailMovieViewController: UIViewController {
         movieServices.getMovieDetail(movieId: movieId) { (detail: MovieDetailModel?) in
             if let movieDetail = detail{
                 DispatchQueue.main.async {
-                    self.ivMovieBackdrop?.load(urlString: "https://image.tmdb.org/t/p/w500/\(movieDetail.backdropPath!)")
+                    self.ivMovieBackdrop.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w500/\(movieDetail.backdropPath!)"), placeholderImage: #imageLiteral(resourceName: "placeholder_image"),completed: nil)
                     self.tvMovieTitle.text = movieDetail.title ?? ""
                     self.tvMovieReleaseStatus.text = "Status: \(movieDetail.status ?? "")"
                     self.tvMovieRuntine.text = "Runtime: \(movieDetail.runtime ?? 0) minutes"
