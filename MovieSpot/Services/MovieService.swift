@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Alamofire
 
 class MovieService {
     func getMoviePopular(onSuccess: @escaping ([MovieModel]?)->()){
@@ -59,4 +60,31 @@ class MovieService {
             
         }.resume()
     }
+    
+    func getCredits(movieId:Int, onSuccess: @escaping ([CastModel]?)->()){
+        guard let url = URL(string:
+                                "https://api.themoviedb.org/3/movie/\(movieId)/credits?api_key=\(Config.MovieDB.apiKey)")
+        else{
+            onSuccess(nil)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url){ data, response, error in
+            
+            guard let data = data, error == nil else{
+                print("gagal")
+                onSuccess(nil)
+                return
+            }
+            
+            let creditsResponse = try? JSONDecoder().decode(CreditsModel.self, from: data)
+            if let response = creditsResponse{
+                onSuccess(response.cast)
+            }else{
+                onSuccess(nil)
+            }
+            
+        }.resume()
+    }
+  
 }

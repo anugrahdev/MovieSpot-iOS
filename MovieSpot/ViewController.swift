@@ -23,9 +23,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let nib = UINib(nibName: "\(MovieTableViewCell.self)", bundle: nil)
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
-
+        let nib = UINib(nibName: "\(MovieTableViewCell.self)", bundle: nil)
         tableViewMovie.register(nib, forCellReuseIdentifier: "\(MovieTableViewCell.self)")
         tableViewMovie.delegate = self
         tableViewMovie.dataSource = self
@@ -50,6 +49,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableViewMovie.deselectRow(at: indexPath, animated: true)
+        
         onMovieClicked(movie: self.movies[indexPath.row])
     }
     

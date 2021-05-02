@@ -17,8 +17,8 @@ class CastCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    public func configure(with image:UIImage) {
-        ivCast.image = image
+    public func configure(with model:CastModel) {
+        ivCast?.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w300/\(model.profilePath ?? "")"), placeholderImage: #imageLiteral(resourceName: "placeholder_image"),completed: nil)
     }
     
 
