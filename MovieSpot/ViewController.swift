@@ -31,6 +31,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         movieServices.getMoviePopular { (movieList) in
             self.movies = movieList!
+        } onError: { (e: String?) in
+            print(e ?? "")
         }
     }
 

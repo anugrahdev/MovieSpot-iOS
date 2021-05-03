@@ -66,10 +66,12 @@ class DetailMovieViewController: UIViewController {
         cvCast.frame = view.bounds
         cvCast.collectionViewLayout = createLayout()
         
-        movieServices.getCredits(movieId: movieId) { (cast: [CastModel]?) in
+        movieServices.getMovieCredits(movieId: movieId) { (cast: [CastModel]?) in
             self.casts = cast!
+        } onError: { (e: String?) in
+            self.showToast(message: e ?? "", font: .systemFont(ofSize: 16.0))
         }
-        
+
        
     }
     
@@ -82,6 +84,8 @@ class DetailMovieViewController: UIViewController {
                     header.configure(with: movieDetail)
                 }
             }
+        } onError: { (e: String?) in
+            self.showToast(message: e ?? "", font: .systemFont(ofSize: 16.0))
         }
         return header
     }

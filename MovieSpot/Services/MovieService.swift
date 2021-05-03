@@ -9,82 +9,54 @@ import Foundation
 import Alamofire
 
 class MovieService {
-    func getMoviePopular(onSuccess: @escaping ([MovieModel]?)->()){
-        guard let url = URL(string:
-                                "https://api.themoviedb.org/3/movie/popular?api_key=\(Config.MovieDB.apiKey)")
-        else{
-            onSuccess(nil)
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url){ data, response, error in
-            
-            guard let data = data, error == nil else{
-                print("gagal")
-                onSuccess(nil)
-                return
+    func getMoviePopular(onSuccess: @escaping ([MovieModel]?)->(), onError: @escaping (String?)->()){
+        let parameters = ["api_key":"\(Config.MovieDB.apiKey)"]
+        let base_url = Config.MovieDB.base_url
+        let request = Alamofire.request("\(base_url)movie/popular", method: .get, parameters: parameters)
+        request
+            .validate(statusCode: 200..<300)
+            .response { (responseData) in
+                guard let data = responseData.data else {return}
+                do{
+                    let result = try JSONDecoder().decode(MovieResponseModel.self, from: data)
+                    onSuccess(result.results)
+                }catch{
+                    onError(error.localizedDescription)
+                }
             }
-            
-            let popularMovieResponse = try? JSONDecoder().decode(MovieResponseModel.self, from: data)
-            if let response = popularMovieResponse{
-                onSuccess(response.results)
-            }else{
-                onSuccess(nil)
-            }
-            
-        }.resume()
     }
     
-    func getMovieDetail(movieId:Int, onSuccess: @escaping (MovieDetailModel?)->()){
-        guard let url = URL(string:
-                                "https://api.themoviedb.org/3/movie/\(movieId)?api_key=\(Config.MovieDB.apiKey)")
-        else{
-            onSuccess(nil)
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url){ data, response, error in
-            
-            guard let data = data, error == nil else{
-                print("gagal")
-                onSuccess(nil)
-                return
+    func getMovieDetail(movieId:Int, onSuccess: @escaping (MovieDetailModel?)->(), onError: @escaping (String?)->()){
+        let parameters = ["api_key":"\(Config.MovieDB.apiKey)"]
+        let base_url = Config.MovieDB.base_url
+        let request = Alamofire.request("\(base_url)movie/\(movieId)", method: .get, parameters: parameters)
+        request
+            .validate(statusCode: 200..<300)
+            .response { (responseData) in
+                guard let data = responseData.data else {return}
+                do{
+                    let result = try JSONDecoder().decode(MovieDetailModel.self, from: data)
+                    onSuccess(result)
+                }catch{
+                    onError(error.localizedDescription)
+                }
             }
-            
-            let detailMovieResponse = try? JSONDecoder().decode(MovieDetailModel.self, from: data)
-            if let response = detailMovieResponse{
-                onSuccess(response)
-            }else{
-                onSuccess(nil)
-            }
-            
-        }.resume()
     }
     
-    func getCredits(movieId:Int, onSuccess: @escaping ([CastModel]?)->()){
-        guard let url = URL(string:
-                                "https://api.themoviedb.org/3/movie/\(movieId)/credits?api_key=\(Config.MovieDB.apiKey)")
-        else{
-            onSuccess(nil)
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url){ data, response, error in
-            
-            guard let data = data, error == nil else{
-                print("gagal")
-                onSuccess(nil)
-                return
+    func getMovieCredits(movieId:Int, onSuccess: @escaping ([CastModel]?)->(), onError: @escaping (String?)->()){
+        let parameters = ["api_key":"\(Config.MovieDB.apiKey)"]
+        let base_url = Config.MovieDB.base_url
+        let request = Alamofire.request("\(base_url)movie/\(movieId)/credits", method: .get, parameters: parameters)
+        request
+            .validate(statusCode: 200..<300)
+            .response { (responseData) in
+                guard let data = responseData.data else {return}
+                do{
+                    let result = try JSONDecoder().decode(CreditsModel.self, from: data)
+                    onSuccess(result.cast)
+                }catch{
+                    onError(error.localizedDescription)
+                }
             }
-            
-            let creditsResponse = try? JSONDecoder().decode(CreditsModel.self, from: data)
-            if let response = creditsResponse{
-                onSuccess(response.cast)
-            }else{
-                onSuccess(nil)
-            }
-            
-        }.resume()
     }
-  
 }
